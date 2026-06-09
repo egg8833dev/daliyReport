@@ -1,0 +1,121 @@
+# 每日資訊日報 — 生成指引
+
+## 基本規則
+- 語言：繁體中文為主，專業術語保留英文
+- 每點 1–2 句說明
+- 每點末尾加【影響】說明對開發者/工程師的實際意義
+- 每條資訊末尾附來源連結：`[→ 媒體名稱](實際文章URL)`
+- 優先查詢一手來源，避免純 SEO 整理文章
+- 每個區塊末尾加 `📌 今日重點：一句話總結`
+- 財經資訊標註「僅供參考，非投資建議」
+
+## 七大資訊類別
+
+### 1. 📰 國際與台灣重要新聞
+來源：Reuters、BBC、CNA 中央社、自由時報、RTI 中央廣播電台
+- 今日最值得關注的國際與台灣時事 3–5 則
+- 涵蓋政治、外交、社會、氣候
+
+### 2. 💹 財經與股市
+來源：Bloomberg、Reuters Finance、玩股網、鉅亨網、Yahoo 股市
+- 美股三大指數、那斯達克科技股、費城半導體指數
+- 台積電（2330）、鴻海（2317）、0050 前一交易日收盤
+- Fed/央行政策、匯率、重要財報
+- 盤前注意事項 1–2 點（標註「僅供參考，非投資建議」）
+
+> **週末特別處理**：週六、週日美股與台股休市，無當日收盤數據。
+> 此時財經區塊改以「本週市場回顧」呈現：
+> 整週漲跌幅、重要事件摘要、下週值得關注的財經行事曆（財報、Fed 會議、經濟數據）。
+
+### 3. 🔬 科技與技術新知
+來源：Hacker News、TechCrunch、The Verge、InfoQ、Ars Technica
+補充：GitHub Trending（今日）、Product Hunt（今日）
+- AI/ML 最新動態（模型發布、研究突破）
+- 硬體、晶片、雲端基礎設施消息
+- GitHub Trending 熱門開源專案 2–3 則（含語言、star 數、GitHub 直連連結）
+- Product Hunt 今日值得關注工具 1–2 則
+
+### 4. 🖥️ 前端 / UI UX / 網頁設計
+**目標：每日產出 8–10 則**
+來源：web.dev、Chrome Developers Blog、Smashing Magazine、frontendfoc.us、Next.js Blog、Vite Blog
+補充：dev.to 高讚文、GitHub Trending JS/TS、CSS-Tricks、Josh W. Comeau、Kent C. Dodds Blog
+
+涵蓋面向（每面向至少 1 則，總計 8–10 則）：
+- **框架動態**：React、Vue、Next.js、Nuxt、Vite、Svelte、Astro 版本更新或重要 RFC/PR
+- **瀏覽器 & Web 平台**：web.dev / Chrome Blog 最新發布、新 API、Firefox/Safari 跟進狀況
+- **CSS & 樣式**：新特性、規範進展、值得學習的技巧或工具
+- **JavaScript 語言**：TC39 Proposals 近期進展（Stage 3/4 優先）
+- **效能優化**：Core Web Vitals、Bundle size、Hydration、Streaming SSR 等實務技巧
+- **UI/UX 設計**：Figma 功能更新、設計系統、設計趨勢、無障礙（a11y）
+- **開源工具 & 元件庫**：新發布或重大更新（附 GitHub 連結與 star 數）
+- **社群精選**：dev.to / X / GitHub Discussion 本週高讚技術文 1–2 則
+- **學習資源**：值得收藏的教學文章、互動工具、或免費課程 1 則
+
+### 5. ⚙️ 後端 / 資安 / 維運 / CI/CD
+**目標：每日產出 8–10 則**
+來源：The Hacker News、CVE Details、Node.js Blog、.NET Blog、Go Blog、Docker Blog、CNCF Blog
+補充：Hacker News 資安討論、GitHub Advisory Database、AWS Blog、GCP Blog、Azure Blog、GitHub Actions Changelog
+
+涵蓋面向（每面向至少 1 則，總計 8–10 則）：
+- **後端語言 & 框架**：Node.js、.NET、Go、Rust、Python 官方 Blog 優先
+- **資安漏洞 CVE**：今日重要 CVE（CVSS ≥ 7.0 優先），附 CVE 編號與詳情連結
+- **資安趨勢**：供應鏈攻擊、零時差漏洞、資安政策（來源：The Hacker News）
+- **Docker & Container**：Docker Engine/Desktop/Compose 更新、container security
+- **Kubernetes & CNCF**：K8s 版本、Helm、Argo CD、Flux、Istio 等生態重要更新
+- **CI/CD**：GitHub Actions、GitLab CI、CircleCI 重要功能或安全更新
+- **雲端服務**：AWS、GCP、Azure 重要公告（新服務、定價變動、deprecation 通知）
+- **資料庫 & 儲存**：PostgreSQL、MySQL、Redis、MongoDB、ClickHouse 等重要更新
+- **可觀測性 & 監控**：OpenTelemetry、Prometheus、Grafana、Datadog 相關動態
+- **社群精選**：Hacker News / Reddit r/devops 本週高讚討論 1 則
+
+### 6. 🔍 SEO 知識與內容優化建議
+來源：Google Search Central Blog、Ahrefs Blog、Moz Blog、Search Engine Journal
+
+#### 6-1 SEO 產業動態
+- Google 演算法更新或 Search Console 新功能 1–2 則
+- 值得關注的 SEO 趨勢或研究（Core Web Vitals、AI Search 影響等）
+
+#### 6-2 內容優化建議（結合當日熱點）
+- 從今日新聞/科技/前端議題中，挑選 1 則最具搜尋潛力的主題
+- 說明關鍵字方向、搜尋意圖、建議內容架構
+- 標註適合發布的平台
+
+### 7. 📝 今日發文素材推薦
+從以上六個區塊中，挑選 1–2 則最適合整理成文章的題材：
+- 為什麼值得寫
+- 目標讀者（前端工程師 / 設計師 / 一般開發者）
+- 建議標題方向（給 2–3 個選項）
+- 建議平台：[Medium](https://medium.com/)、[iT 邦幫忙](https://ithelp.ithome.com.tw/)、[LinkedIn](https://www.linkedin.com/)
+
+---
+
+## Markdown 輸出格式（供 HTML 解析，不可更改標題）
+
+```
+## 📰 一、國際與台灣重要新聞
+## 💹 二、財經與股市資訊
+## 🔬 三、科技與技術新知
+## 🖥️ 四、前端 / UI UX / 網頁設計
+## ⚙️ 五、後端 / 資安 / 維運 / CI/CD
+## 🔍 六、SEO 知識與內容優化建議
+## 📝 七、今日發文素材推薦
+```
+
+區塊之間用 `---` 分隔。
+
+---
+
+## 寫入規則
+
+1. 將 Markdown 報告存成 `/tmp/daily_report.md`
+2. 執行寫入腳本（**務必加 TZ=Asia/Taipei**）：
+   ```bash
+   REPORT_PATH=$(ls /sessions/*/mnt/Desktop/每日周報/update_report.py 2>/dev/null | head -1)
+   TZ=Asia/Taipei python3 "$REPORT_PATH" /tmp/daily_report.md
+   ```
+3. 腳本會自動：
+   - 驗證七個區塊是否完整（缺少即中止，不覆蓋舊報告）
+   - 寫入 `public/reports/YYYY-MM-DD.json`（每日一檔）
+   - 更新 `public/reports/manifest.json`（報告索引）
+   - 執行 `git add public/reports/ && git commit && git push`（自動部署到 Vercel）
+   - 所有報告永久保留，不自動刪除
