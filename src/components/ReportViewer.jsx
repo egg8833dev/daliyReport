@@ -4,48 +4,55 @@ const SECTIONS = [
   {
     id: 'sec-news',
     ico: '📰',
-    ttl: '一、國際與台灣重要新聞',
+    ttl: '國際與台灣重要新聞',
+    color: '#3b82f6',
     re: /##\s*📰[\s\S]*?(?=##\s*💹|$)/,
   },
   {
     id: 'sec-finance',
     ico: '💹',
-    ttl: '二、財經與股市資訊',
+    ttl: '財經與股市資訊',
+    color: '#10b981',
     re: /##\s*💹[\s\S]*?(?=##\s*🔬|$)/,
   },
   {
     id: 'sec-tech',
     ico: '🔬',
-    ttl: '三、科技與技術新知',
+    ttl: '科技與技術新知',
+    color: '#8b5cf6',
     re: /##\s*🔬[\s\S]*?(?=##\s*🖥|$)/,
   },
   {
     id: 'sec-frontend',
     ico: '🖥️',
-    ttl: '四、前端 / UI UX / 網頁設計',
+    ttl: '前端 / UI UX / 網頁設計',
+    color: '#f59e0b',
     re: /##\s*🖥[\s\S]*?(?=##\s*⚙|$)/,
   },
   {
     id: 'sec-backend',
     ico: '⚙️',
-    ttl: '五、後端 / 資安 / 維運',
+    ttl: '後端 / 資安 / 維運',
+    color: '#ef4444',
     re: /##\s*⚙[\s\S]*?(?=##\s*🔍|$)/,
   },
   {
     id: 'sec-seo',
     ico: '🔍',
-    ttl: '六、SEO 知識與內容優化',
+    ttl: 'SEO 知識與內容優化',
+    color: '#ec4899',
     re: /##\s*🔍[\s\S]*?(?=##\s*📝|$)/,
   },
   {
     id: 'sec-post',
     ico: '📝',
-    ttl: '七、今日發文素材推薦',
+    ttl: '今日發文素材推薦',
+    color: '#14b8a6',
     re: /##\s*📝[\s\S]*?$/,
   },
 ]
 
-/* ── Inline formatting ─────────────────────────── */
+/* ── Inline formatting ──────────────────────────── */
 function fmt(t) {
   return t
     .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
@@ -84,8 +91,14 @@ function toHtml(md) {
   return out
 }
 
-/* ── Single collapsible section ─────────────────── */
-function Section({ id, ico, ttl, raw }) {
+const ChevronIcon = () => (
+  <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="2,4 6,8 10,4" />
+  </svg>
+)
+
+/* ── Single section ─────────────────────────────── */
+function Section({ id, ico, ttl, color, raw }) {
   const [open, setOpen] = useState(true)
 
   const hlMatch = raw.match(/📌[^：:\n]*[：:]\s*(.+)/)
@@ -93,19 +106,24 @@ function Section({ id, ico, ttl, raw }) {
   const bodyMd = raw.replace(/^📌[^\n]+$/mg, '').trim()
   const bodyHtml = useMemo(() => toHtml(bodyMd), [bodyMd])
 
+  const icoStyle = {
+    background: `${color}16`,
+    borderColor: `${color}28`,
+  }
+
   return (
     <div className="sec" id={id}>
       <div className="sec-hdr" onClick={() => setOpen(o => !o)}>
-        <span className="ico">{ico}</span>
+        <div className="sec-ico-wrap" style={icoStyle}>{ico}</div>
         <span className="ttl">{ttl}</span>
-        <span className="tog">{open ? '▾' : '▸'}</span>
+        <span className={`tog${open ? ' open' : ''}`}><ChevronIcon /></span>
       </div>
       {open && (
         <div className="sec-body">
           <div dangerouslySetInnerHTML={{ __html: bodyHtml }} />
           {hl && (
             <div className="hl">
-              <div className="hl-lbl">📌 今日重點</div>
+              <div className="hl-lbl">今日重點</div>
               <p dangerouslySetInnerHTML={{ __html: fmt(hl) }} />
             </div>
           )}

@@ -9,14 +9,28 @@ function todayTW() {
   ].join('-')
 }
 
+const NewsIcon = () => (
+  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="2" y="2" width="12" height="12" rx="2" />
+    <line x1="5" y1="5.5" x2="11" y2="5.5" />
+    <line x1="5" y1="8" x2="11" y2="8" />
+    <line x1="5" y1="10.5" x2="8" y2="10.5" />
+  </svg>
+)
+
 export default function Sidebar({ manifest, activeDate, onSelect }) {
   const td = todayTW()
 
   return (
     <aside className="sidebar">
       <div className="sidebar-header">
-        <h1>📋 每日資訊日報</h1>
-        <p>共 {manifest.length} 份報告</p>
+        <div className="sidebar-brand">
+          <div className="sidebar-brand-icon">
+            <NewsIcon />
+          </div>
+          <span className="sidebar-title">每日資訊日報</span>
+        </div>
+        <div className="sidebar-meta">共 {manifest.length} 份報告</div>
       </div>
       <div className="report-list">
         {manifest.map(r => {
