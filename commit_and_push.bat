@@ -4,8 +4,9 @@ cd /d "C:\Users\egg8833\Desktop\每日周報"
 :: Remove any stale lock file
 if exist ".git\index.lock" del /f ".git\index.lock"
 
-:: Stage all changes
+:: Stage all changes (explicit to avoid index issues)
 git add -A
+git add src/ public/ update_report.py 2>nul
 
 :: Commit
 for /f "tokens=2 delims==" %%I in ('wmic os get localdatetime /value') do set dt=%%I
