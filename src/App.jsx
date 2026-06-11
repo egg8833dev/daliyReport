@@ -40,6 +40,7 @@ export default function App() {
   const [activeDate, setActiveDate] = useState(null)
   const [report, setReport] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [navOpen, setNavOpen] = useState(false)
   const [theme, setTheme] = useState(() =>
     localStorage.getItem('theme') || 'dark'
   )
@@ -74,11 +75,15 @@ export default function App() {
   const currentEntry = manifest.find(r => r.date === activeDate)
 
   return (
-    <div className="app-layout">
+    <div className={`app-layout${navOpen ? ' nav-open' : ''}`}>
       <Sidebar
         manifest={manifest}
         activeDate={activeDate}
-        onSelect={setActiveDate}
+        onSelect={(d) => { setActiveDate(d); setNavOpen(false) }}
+      />
+      <div
+        className="sidebar-overlay"
+        onClick={() => setNavOpen(false)}
       />
       <div className="main">
         <Header
@@ -86,6 +91,7 @@ export default function App() {
           generatedAt={currentEntry?.generatedAt}
           theme={theme}
           onToggleTheme={() => setTheme(t => t === 'dark' ? 'light' : 'dark')}
+          onToggleNav={() => setNavOpen(o => !o)}
         />
         <SectionNav />
         <div className="content">

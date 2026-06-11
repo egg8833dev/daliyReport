@@ -51,48 +51,13 @@ def update_manifest(date, generated_at):
     print("manifest updated: " + str(len(manifest)) + " reports")
     return len(manifest)
 
-def load_token():
-    p = os.path.join(BASE_DIR, ".env")
-    if not os.path.exists(p):
-        return None
-    with open(p, "rb") as fb:
-        raw = fb.read().replace(b"\x00", b"").decode("utf-8", errors="ignore")
-    for line in raw.splitlines():
-        line = line.strip()
-        if line.startswith("GITHUB_TOKEN="):
-            return line.split("=",1)[1].strip().strip("\"'")
-    return None
-
 def git_push(date):
-    def run(cmd):
-        return subprocess.run(cmd, cwd=BASE_DIR, capture_output=True, text=True)
-
-    token = load_token()
-    if not token:
-        print("no GITHUB_TOKEN, skipping push")
-        return
-
-    run(["git","remote","set-url","origin","https://"+token+"@github.com/egg8833dev/daliyReport.git"])
-    run(["git","config","user.email","daily-bot@report.local"])
-    run(["git","config","user.name","Daily Report Bot"])
-
-    r = run(["git","add","public/reports/"])
-    if r.returncode != 0:
-        print("git add failed: " + r.stderr.strip()); return
-
-    r = run(["git","commit","-m","daily report " + date])
-    if r.returncode != 0:
-        if "nothing to commit" in (r.stdout+r.stderr):
-            print("nothing to commit, skip")
-        else:
-            print("git commit failed: " + r.stderr.strip())
-        return
-
-    r = run(["git","push","origin","main"])
-    if r.returncode == 0:
-        print("git push OK")
-    else:
-        print("git push failed: " + r.stderr.strip())
+    # Git operations intentionally skipped here.
+    # Running Linux git against Windows NTFS .git corrupts the index file,
+    # causing Windows Task Scheduler (DailyReport-GitPush at 04:45) to fail
+    # with "fatal: index file corrupt".
+    # All git operations are owned by push_report_auto.bat on the Windows side.
+    print("git: skipped (Windows Task Scheduler handles push at 04:45)")
 
 def update(content):
     if not validate(content):

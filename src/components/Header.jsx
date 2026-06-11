@@ -29,11 +29,22 @@ const MoonIcon = () => (
   </svg>
 )
 
-export default function Header({ date, generatedAt, theme, onToggleTheme }) {
+const MenuIcon = () => (
+  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
+    <line x1="2.5" y1="4" x2="13.5" y2="4" />
+    <line x1="2.5" y1="8" x2="13.5" y2="8" />
+    <line x1="2.5" y1="12" x2="13.5" y2="12" />
+  </svg>
+)
+
+export default function Header({ date, generatedAt, theme, onToggleTheme, onToggleNav }) {
   const fmt = fmtDate(date)
 
   return (
     <div className="topbar">
+      <button className="nav-btn" onClick={onToggleNav} title="報告清單" aria-label="開啟報告清單">
+        <MenuIcon />
+      </button>
       <div className="topbar-date">
         <div className="topbar-date-label">目前報告</div>
         {fmt
