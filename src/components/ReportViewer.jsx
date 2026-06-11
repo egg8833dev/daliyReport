@@ -41,7 +41,21 @@ const SECTIONS = [
     ico: '🔍',
     ttl: 'SEO 知識與內容優化',
     color: '#ec4899',
-    re: /##\s*🔍[\s\S]*?(?=##\s*📝|$)/,
+    re: /##\s*🔍[\s\S]*?(?=##\s*💼|$)/,
+  },
+  {
+    id: 'sec-career',
+    ico: '💼',
+    ttl: '職涯規劃與職場發展',
+    color: '#0ea5e9',
+    re: /##\s*💼[\s\S]*?(?=##\s*🌟|$)/,
+  },
+  {
+    id: 'sec-inspire',
+    ico: '🌟',
+    ttl: '心靈勵志與成功學',
+    color: '#f97316',
+    re: /##\s*🌟[\s\S]*?(?=##\s*📝|$)/,
   },
   {
     id: 'sec-post',

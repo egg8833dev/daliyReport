@@ -7,6 +7,8 @@ const TABS = [
   { href: '#sec-frontend', label: '🖥️ 前端' },
   { href: '#sec-backend',  label: '⚙️ 後端' },
   { href: '#sec-seo',      label: '🔍 SEO' },
+  { href: '#sec-career',   label: '💼 職涯' },
+  { href: '#sec-inspire',  label: '🌟 勵志' },
   { href: '#sec-post',     label: '📝 發文' },
 ]
 
