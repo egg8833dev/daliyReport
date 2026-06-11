@@ -18,15 +18,17 @@ git add public/reports/
 git status --short >> "%LOGFILE%" 2>&1
 git commit -m "daily report %TODAY%"
 set COMMIT_ERR=%errorlevel%
-echo [%DATE% %TIME%] commit errorlevel=%COMMIT_ERR% >> "%LOGFILE%"
+echo [%DATE% %TIME%] commit err=%COMMIT_ERR% >> "%LOGFILE%"
 
-if %COMMIT_ERR% neq 0 (
-    echo [%DATE% %TIME%] nothing to commit >> "%LOGFILE%"
-    goto :eof
-)
-
+:: Always push - handles case where Claude task already committed but push failed
 git push
-echo [%DATE% %TIME%] push errorlevel=%errorlevel% >> "%LOGFILE%"
+set PUSH_ERR=%errorlevel%
+echo [%DATE% %TIME%] push err=%PUSH_ERR% >> "%LOGFILE%"
+
+if %PUSH_ERR% neq 0 (
+    echo [%DATE% %TIME%] push FAILED - opening Fork >> "%LOGFILE%"
+    start "" "%LOCALAPPDATA%\Fork\current\Fork.exe" "C:\Users\egg8833\Desktop\¨C¤é©P³ø"
+)
 
 :eof
 echo [%DATE% %TIME%] === done === >> "%LOGFILE%"

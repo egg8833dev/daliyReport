@@ -80,6 +80,7 @@ export default function App() {
         manifest={manifest}
         activeDate={activeDate}
         onSelect={(d) => { setActiveDate(d); setNavOpen(false) }}
+        onClose={() => setNavOpen(false)}
       />
       <div
         className="sidebar-overlay"

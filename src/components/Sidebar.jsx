@@ -18,12 +18,18 @@ const NewsIcon = () => (
   </svg>
 )
 
-export default function Sidebar({ manifest, activeDate, onSelect }) {
+export default function Sidebar({ manifest, activeDate, onSelect, onClose }) {
   const td = todayTW()
 
   return (
     <aside className="sidebar">
       <div className="sidebar-header">
+        <button className="sidebar-close" onClick={onClose} aria-label="關閉選單">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
+            <line x1="4" y1="4" x2="12" y2="12" />
+            <line x1="12" y1="4" x2="4" y2="12" />
+          </svg>
+        </button>
         <div className="sidebar-brand">
           <div className="sidebar-brand-icon">
             <NewsIcon />

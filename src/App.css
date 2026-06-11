@@ -103,6 +103,25 @@ a:hover { text-decoration: underline; }
   border-bottom: 1px solid var(--border-sub);
 }
 
+.sidebar-close {
+  display: none;
+  position: absolute;
+  top: 14px;
+  right: 12px;
+  width: 30px;
+  height: 30px;
+  border-radius: 7px;
+  background: var(--accent-soft);
+  border: 1px solid var(--border-sub);
+  color: var(--text2);
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+.sidebar-close svg { width: 16px; height: 16px; }
+.sidebar-close:hover { color: var(--text); }
+
 .sidebar-brand {
   display: flex;
   align-items: center;
@@ -316,7 +335,12 @@ a:hover { text-decoration: underline; }
   align-items: center;
   padding: 0 14px;
   gap: 2px;
+  flex-wrap: nowrap;
   overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
   flex-shrink: 0;
 }
 
@@ -627,6 +651,8 @@ a:hover { text-decoration: underline; }
     box-shadow: 0 0 40px rgba(0, 0, 0, 0.45);
   }
   .app-layout.nav-open .sidebar { transform: translateX(0); }
+
+  .sidebar-close { display: flex; }
 
   .sidebar-overlay {
     position: fixed;
