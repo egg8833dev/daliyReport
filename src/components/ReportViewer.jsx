@@ -58,6 +58,13 @@ const SECTIONS = [
     re: /##\s*🌟[\s\S]*?(?=\n##\s|$)/,
   },
   {
+    id: 'sec-history',
+    ico: '📜',
+    ttl: '歷史上的今天',
+    color: '#a16207',
+    re: /##\s*📜[\s\S]*?(?=\n##\s|$)/,
+  },
+  {
     id: 'sec-post',
     ico: '📝',
     ttl: '今日發文素材推薦',
