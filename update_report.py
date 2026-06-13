@@ -1,4 +1,4 @@
-import glob, json, os, subprocess, sys, tempfile
+import glob, json, os, sys, tempfile
 from datetime import datetime
 
 _WIN_BASE = r"C:\Users\egg8833\Desktop\每日周報"
@@ -52,37 +52,10 @@ def update_manifest(date, generated_at):
     return len(manifest)
 
 def git_push(date):
-    # Run git add/commit/push from here.
-    # push_report_auto.bat (Windows Task Scheduler 04:45) already starts with
-    # "del .git\index + git reset" to fix any Linux-written index, so even if
-    # this succeeds or fails, the bat handles the fallback safely.
-
-    def run(cmd):
-        return subprocess.run(cmd, cwd=BASE_DIR, capture_output=True, text=True)
-
-    # Remove stale lock / Linux-written index so git starts clean
-    for fname in [".git/index.lock", ".git/index"]:
-        try:
-            os.remove(os.path.join(BASE_DIR, fname.replace("/", os.sep)))
-        except FileNotFoundError:
-            pass
-
-    run(["git", "reset", "--quiet"])
-
-    r = run(["git", "add", "public/reports/"])
-    if r.returncode != 0:
-        print("git add failed: " + r.stderr.strip())
-        return
-
-    r = run(["git", "commit", "-m", "daily report " + date])
-    if r.returncode != 0:
-        print("git commit: " + (r.stdout.strip() or r.stderr.strip()))
-        return
-    print("git commit ok: " + r.stdout.strip())
-
-    # Push is handled by push_report_auto.bat (Windows side) to avoid proxy issues.
-    # That bat always tries git push after fixing the index.
-    print("git commit done - push_report_auto.bat will push at 04:45")
+    # Git operations are handled entirely by push_report_auto.bat on the Windows side.
+    # Running git from Linux (bash sandbox) leaves .git/refs/heads/main.lock on the
+    # NTFS filesystem which blocks Windows git. Do NOT run any git commands here.
+    print("git push skipped - handled by Windows Task Scheduler (push_report_auto.bat at 04:45)")
 
 def update(content):
     if not validate(content):
