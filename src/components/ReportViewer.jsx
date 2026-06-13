@@ -60,7 +60,7 @@ const SECTIONS = [
   {
     id: 'sec-history',
     ico: '📅',
-    ttl: '歷史上的今天',
+    ttl: '歷史脈絡｜鑑往知今',
     color: '#a16207',
     re: /##\s*📅[\s\S]*?(?=\n##\s|$)/,
   },
