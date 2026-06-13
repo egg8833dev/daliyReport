@@ -59,10 +59,10 @@ const SECTIONS = [
   },
   {
     id: 'sec-history',
-    ico: '📜',
+    ico: '📅',
     ttl: '歷史上的今天',
     color: '#a16207',
-    re: /##\s*📜[\s\S]*?(?=\n##\s|$)/,
+    re: /##\s*📅[\s\S]*?(?=\n##\s|$)/,
   },
   {
     id: 'sec-post',
