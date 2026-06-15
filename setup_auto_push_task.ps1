@@ -1,6 +1,6 @@
 ﻿# setup_auto_push_task.ps1 - Run once to enable full automation
 
-$dir   = "C:\Users\egg8833\Desktop\每日周報"
+$dir   = "C:\Users\egg8833\Desktop\daliyReport"
 $task  = "DailyReport-GitPush"
 $bat   = "$dir\push_report_auto.bat"
 $log   = "$dir\push_log.txt"

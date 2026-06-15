@@ -1,8 +1,8 @@
 import glob, json, os, sys, tempfile
 from datetime import datetime
 
-_WIN_BASE = r"C:\Users\egg8833\Desktop\每日周報"
-_cands = glob.glob("/sessions/*/mnt/Desktop/每日周報")
+_WIN_BASE = r"C:\Users\egg8833\Desktop\daliyReport"
+_cands = glob.glob("/sessions/*/mnt/Desktop/daliyReport")
 _BASH = _cands[0] if _cands else None
 BASE_DIR = _BASH if (_BASH and os.path.exists(_BASH)) else _WIN_BASE
 REPORTS_DIR = os.path.join(BASE_DIR, "public", "reports")
