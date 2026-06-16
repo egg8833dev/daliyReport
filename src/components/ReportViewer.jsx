@@ -91,14 +91,37 @@ function fmt(t) {
     )
 }
 
+/* ── HTML escape (for code blocks) ─────────────── */
+function esc(s) {
+  return s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+}
+
 /* ── Markdown → HTML ──────────────────────────── */
 function toHtml(md) {
   let out = ''
   let inList = false
+  let inCode = false
+  let codeLines = []
   const lines = md.split('\n')
 
   for (const raw of lines) {
     const l = raw.trim()
+    // fenced code block ``` ... ```
+    if (l.startsWith('```')) {
+      if (inCode) {
+        out += `<pre class="code"><code>${esc(codeLines.join('\n'))}</code></pre>`
+        codeLines = []
+        inCode = false
+      } else {
+        if (inList) { out += '</ul>'; inList = false }
+        inCode = true
+      }
+      continue
+    }
+    if (inCode) { codeLines.push(raw); continue }
     if (!l) {
       if (inList) { out += '</ul>'; inList = false }
       continue
@@ -114,6 +137,9 @@ function toHtml(md) {
       if (inList) { out += '</ul>'; inList = false }
       out += `<p>${fmt(l)}</p>`
     }
+  }
+  if (inCode && codeLines.length) {
+    out += `<pre class="code"><code>${esc(codeLines.join('\n'))}</code></pre>`
   }
   if (inList) out += '</ul>'
   return out
