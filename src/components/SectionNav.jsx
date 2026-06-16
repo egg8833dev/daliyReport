@@ -10,6 +10,7 @@ const TABS = [
   { href: '#sec-career',   label: '💼 職涯' },
   { href: '#sec-inspire',  label: '🌟 勵志' },
   { href: '#sec-history',  label: '📅 脈絡' },
+  { href: '#sec-algo',     label: '🧮 演算法' },
   { href: '#sec-post',     label: '📝 發文' },
 ]
 

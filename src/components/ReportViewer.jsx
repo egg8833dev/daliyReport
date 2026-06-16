@@ -65,6 +65,13 @@ const SECTIONS = [
     re: /##\s*📅[\s\S]*?(?=\n##\s|$)/,
   },
   {
+    id: 'sec-algo',
+    ico: '🧮',
+    ttl: '演算法',
+    color: '#6366f1',
+    re: /##\s*🧮[\s\S]*?(?=\n##\s|$)/,
+  },
+  {
     id: 'sec-post',
     ico: '📝',
     ttl: '今日發文素材推薦',
