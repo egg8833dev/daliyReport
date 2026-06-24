@@ -17,15 +17,28 @@
 - 涵蓋政治、外交、社會、氣候
 
 ### 2. 💹 財經與股市
-來源：Bloomberg、Reuters Finance、玩股網、鉅亨網、Yahoo 股市
-- 美股三大指數、那斯達克科技股、費城半導體指數
-- 台積電（2330）、鴻海（2317）、0050 前一交易日收盤
-- Fed/央行政策、匯率、重要財報
-- 盤前注意事項 1–2 點（標註「僅供參考，非投資建議」）
+來源：Bloomberg、Reuters Finance、玩股網、鉅亨網、Yahoo 股市、TWSE 臺灣證券交易所、期交所（台指期夜盤）
+
+> **必須搜尋當下最新數據，不可沿用舊報告的數字。** 每次執行都要重新查詢即時 / 最近收盤行情，並在開頭標註各項數據的資料時間。所有內容標註「僅供參考，非投資建議」。
+
+**固定版型（請依下列順序，每段用 `###` 子標題呈現）：**
+
+1. **美股（當下 / 最近收盤）**：搜尋並列出道瓊、那斯達克、S&P 500、羅素 2000、費城半導體指數的最新點位與漲跌幅；簡述當日盤面驅動因素。
+2. **台股夜盤（台指期，至凌晨 05:00）**：搜尋台指期夜盤即時 / 最後行情，說明相對日盤收盤的強弱與盤後氛圍。
+3. **台股前一交易日（日盤收盤）**：加權指數（TAIEX）最近一個交易日的收盤點位與漲跌幅（來源：TWSE / Yahoo 股市）。
+4. **持有個股報價（每檔都要查當下最新股價，並標註日期）**：
+   - 台積電（2330）
+   - 鴻海（2317）
+   - 元大台灣50（0050）
+   - 元大台灣50正2（00631L，槓桿型，須提醒波動約大盤 2 倍、控管風險）
+   > 註：若日後持股有增減，請更新此清單。
+5. **國內外財經重要資訊**：Fed / 央行政策與利率決議、匯率、重要財報、地緣與原物料（油價）等對市場有實質影響的消息。
+6. **盤前注意事項 2–3 點**：結合上述資訊給出當日操作觀察重點（標註「僅供參考，非投資建議」）。
+
+每段重點末尾可加【影響】說明對投資 / 盤面的實際意義。
 
 > **週末特別處理**：週六、週日美股與台股休市，無當日收盤數據。
-> 此時財經區塊改以「本週市場回顧」呈現：
-> 整週漲跌幅、重要事件摘要、下週值得關注的財經行事曆（財報、Fed 會議、經濟數據）。
+> 此時財經區塊改以「本週市場回顧」呈現：整週漲跌幅、重要事件摘要、持股一週表現、下週值得關注的財經行事曆（財報、Fed 會議、經濟數據）。
 
 ### 3. 🔬 科技與技術新知
 來源：Hacker News、TechCrunch、The Verge、InfoQ、Ars Technica
@@ -36,17 +49,20 @@
 - Product Hunt 今日值得關注工具 1–2 則
 
 ### 4. 🖥️ 前端 / UI UX / 網頁設計
-**目標：每日產出 8–10 則**
+**目標：每日產出 10–12 則**
 來源：web.dev、Chrome Developers Blog、Smashing Magazine、frontendfoc.us、Next.js Blog、Vite Blog
 補充：dev.to 高讚文、GitHub Trending JS/TS、CSS-Tricks、Josh W. Comeau、Kent C. Dodds Blog
+網頁設計與特效來源：Awwwards、CSS Design Awards、FWA、Godly、SiteInspire、httpster、Three.js / R3F、GSAP、CodePen
 
-涵蓋面向（每面向至少 1 則，總計 8–10 則）：
+涵蓋面向（每面向至少 1 則，總計 10–12 則）：
 - **框架動態**：React、Vue、Next.js、Nuxt、Vite、Svelte、Astro 版本更新或重要 RFC/PR
 - **瀏覽器 & Web 平台**：web.dev / Chrome Blog 最新發布、新 API、Firefox/Safari 跟進狀況
 - **CSS & 樣式**：新特性、規範進展、值得學習的技巧或工具
 - **JavaScript 語言**：TC39 Proposals 近期進展（Stage 3/4 優先）
 - **效能優化**：Core Web Vitals、Bundle size、Hydration、Streaming SSR 等實務技巧
 - **UI/UX 設計**：Figma 功能更新、設計系統、設計趨勢、無障礙（a11y）
+- **網頁設計與網頁版面**：得獎 / 特色網站 1–2 則（來源：Awwwards、CSS Design Awards、FWA、Godly、SiteInspire、httpster），拆解其版面、排版、色彩、互動巧思，附網站連結
+- **動畫效果與特效**：scroll-driven animation、WebGL / Three.js / React Three Fiber、GSAP、Lottie、shader、3D 互動 1–2 則，附 CodePen / GitHub / demo 連結與技術拆解
 - **開源工具 & 元件庫**：新發布或重大更新（附 GitHub 連結與 star 數）
 - **社群精選**：dev.to / X / GitHub Discussion 本週高讚技術文 1–2 則
 - **學習資源**：值得收藏的教學文章、互動工具、或免費課程 1 則
