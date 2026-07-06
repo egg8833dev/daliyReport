@@ -552,14 +552,14 @@ a:hover { text-decoration: underline; }
 
 /* ── Markdown inside sections ───────────────────── */
 .sec-body h3 {
-  font-size: 10.5px;
+  font-size: 14.5px;
   font-weight: 700;
-  color: var(--text2);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  margin: 22px 0 10px;
-  padding-bottom: 7px;
-  border-bottom: 1px solid var(--border-sub);
+  color: var(--text);
+  letter-spacing: -0.01em;
+  line-height: 1.45;
+  margin: 24px 0 11px;
+  padding-left: 11px;
+  border-left: 3px solid var(--accent);
 }
 
 .sec-body h3:first-child { margin-top: 0; }
@@ -587,6 +587,68 @@ a:hover { text-decoration: underline; }
 
 .sec-body ul li span { color: var(--text); }
 .sec-body ul li:hover { color: var(--text); }
+
+/* ── Ordered list (keeps 1. 2. 3. numbers) ──────── */
+.sec-body ol {
+  margin: 8px 0;
+  padding-left: 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.sec-body ol li {
+  list-style: decimal;
+  font-size: 13.5px;
+  color: var(--text2);
+  line-height: 1.72;
+  padding: 3px 0;
+}
+
+.sec-body ol li::marker { color: var(--accent); font-weight: 700; }
+.sec-body ol li span { color: var(--text); }
+
+/* ── Tables ─────────────────────────────────────── */
+.sec-body .tbl-wrap { overflow-x: auto; margin: 14px 0; }
+
+.sec-body table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.sec-body th,
+.sec-body td {
+  border: 1px solid var(--border);
+  padding: 8px 11px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.sec-body th {
+  background: var(--surface-el);
+  color: var(--text);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.sec-body td { color: var(--text2); }
+.sec-body tbody tr:nth-child(even) { background: var(--surface-hover); }
+
+/* ── Blockquote ─────────────────────────────────── */
+.sec-body blockquote {
+  margin: 14px 0;
+  padding: 11px 15px;
+  border-left: 3px solid var(--accent-border);
+  background: var(--surface-el);
+  border-radius: 0 var(--r-sm) var(--r-sm) 0;
+  color: var(--text2);
+  font-size: 13px;
+  line-height: 1.72;
+}
+
+.sec-body blockquote strong { color: var(--text); }
 
 .sec-body p {
   font-size: 13.5px;
