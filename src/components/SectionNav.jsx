@@ -1,18 +1,7 @@
 import { useState, useEffect } from 'react'
+import { SECTIONS } from '../sections.js'
 
-const TABS = [
-  { href: '#sec-news',     label: '📰 新聞' },
-  { href: '#sec-finance',  label: '💹 財經' },
-  { href: '#sec-tech',     label: '🔬 科技' },
-  { href: '#sec-frontend', label: '🖥️ 前端' },
-  { href: '#sec-backend',  label: '⚙️ 後端' },
-  { href: '#sec-seo',      label: '🔍 SEO' },
-  { href: '#sec-career',   label: '💼 職涯' },
-  { href: '#sec-inspire',  label: '🌟 勵志' },
-  { href: '#sec-history',  label: '📅 脈絡' },
-  { href: '#sec-algo',     label: '🧮 演算法' },
-  { href: '#sec-post',     label: '📝 發文' },
-]
+const TABS = SECTIONS.map(s => ({ href: '#' + s.id, label: s.label }))
 
 export default function SectionNav() {
   const [activeId, setActiveId] = useState('sec-news')
