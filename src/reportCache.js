@@ -12,7 +12,9 @@ export async function loadAllReports(manifest, onProgress) {
     if (content == null) {
       try {
         const res = await fetch(`/reports/${m.date}.json`)
+        if (!res.ok) throw new Error(`HTTP ${res.status}`)
         const data = await res.json()
+        if (data?.content == null) throw new Error('missing content')
         content = data.content
         cache.set(m.date, content)
       } catch {
