@@ -3,6 +3,7 @@ import Sidebar from './components/Sidebar.jsx'
 import Header from './components/Header.jsx'
 import SectionNav from './components/SectionNav.jsx'
 import ReportViewer from './components/ReportViewer.jsx'
+import SearchView from './components/SearchView.jsx'
 
 const SKEL_ROWS = [
   ['94%', '81%', '88%', '73%', '90%'],
@@ -44,6 +45,8 @@ export default function App() {
   const [theme, setTheme] = useState(() =>
     localStorage.getItem('theme') || 'dark'
   )
+  const [view, setView] = useState('report')
+  const [pendingScroll, setPendingScroll] = useState(null)
 
   useEffect(() => {
     fetch('/reports/manifest.json')
@@ -74,12 +77,21 @@ export default function App() {
 
   const currentEntry = manifest.find(r => r.date === activeDate)
 
+  const openResult = (date, sectionId) => {
+    setActiveDate(date)
+    setView('report')
+    setPendingScroll(sectionId)
+    setNavOpen(false)
+  }
+
   return (
     <div className={`app-layout${navOpen ? ' nav-open' : ''}`}>
       <Sidebar
         manifest={manifest}
         activeDate={activeDate}
-        onSelect={(d) => { setActiveDate(d); setNavOpen(false) }}
+        view={view}
+        onSelect={(d) => { setActiveDate(d); setView('report'); setNavOpen(false) }}
+        onOpenSearch={() => { setView('search'); setNavOpen(false) }}
         onClose={() => setNavOpen(false)}
       />
       <div
@@ -94,18 +106,28 @@ export default function App() {
           onToggleTheme={() => setTheme(t => t === 'dark' ? 'light' : 'dark')}
           onToggleNav={() => setNavOpen(o => !o)}
         />
-        <SectionNav />
+        {view === 'report' && <SectionNav />}
         <div className="content">
-          {loading && <Skeleton />}
-          {!loading && !report && (
-            <div className="state-center">
-              <div className="state-icon"><InboxIcon /></div>
-              <h2>尚無報告</h2>
-              <p>排程任務將在每日清晨自動生成。</p>
-            </div>
-          )}
-          {!loading && report && (
-            <ReportViewer content={report.content} />
+          {view === 'search' ? (
+            <SearchView manifest={manifest} onOpenResult={openResult} />
+          ) : (
+            <>
+              {loading && <Skeleton />}
+              {!loading && !report && (
+                <div className="state-center">
+                  <div className="state-icon"><InboxIcon /></div>
+                  <h2>尚無報告</h2>
+                  <p>排程任務將在每日清晨自動生成。</p>
+                </div>
+              )}
+              {!loading && report && (
+                <ReportViewer
+                  content={report.content}
+                  scrollTo={pendingScroll}
+                  onScrolled={() => setPendingScroll(null)}
+                />
+              )}
+            </>
           )}
         </div>
       </div>

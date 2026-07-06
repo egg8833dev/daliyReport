@@ -18,7 +18,7 @@ const NewsIcon = () => (
   </svg>
 )
 
-export default function Sidebar({ manifest, activeDate, onSelect, onClose }) {
+export default function Sidebar({ manifest, activeDate, view, onSelect, onOpenSearch, onClose }) {
   const td = todayTW()
 
   return (
@@ -37,13 +37,19 @@ export default function Sidebar({ manifest, activeDate, onSelect, onClose }) {
           <span className="sidebar-title">每日資訊日報</span>
         </div>
         <div className="sidebar-meta">共 {manifest.length} 份報告</div>
+        <button
+          className={`sidebar-search-btn${view === 'search' ? ' active' : ''}`}
+          onClick={onOpenSearch}
+        >
+          🔍 搜尋知識庫
+        </button>
       </div>
       <div className="report-list">
         {manifest.map(r => {
           const dt = new Date(r.date + 'T00:00:00')
           const dow = dt.getDay()
           const isToday = r.date === td
-          const isActive = r.date === activeDate
+          const isActive = view === 'report' && r.date === activeDate
           const isSun = dow === 0
           return (
             <div

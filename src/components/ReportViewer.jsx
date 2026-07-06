@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { SECTIONS } from '../sections.js'
 
 /* ── Inline formatting ──────────────────────────── */
@@ -109,7 +109,14 @@ function Section({ id, ico, ttl, color, raw }) {
 }
 
 /* ── Main viewer ─────────────────────────────────── */
-export default function ReportViewer({ content }) {
+export default function ReportViewer({ content, scrollTo, onScrolled }) {
+  useEffect(() => {
+    if (!scrollTo) return
+    const el = document.getElementById(scrollTo)
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    onScrolled?.()
+  }, [scrollTo, content])
+
   const sections = useMemo(() => {
     return SECTIONS.map(s => {
       const m = content.match(s.re)
