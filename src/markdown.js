@@ -99,7 +99,9 @@ export function toHtml(md) {
     }
     closeTable()
 
-    if (!l) { closeBlocks(); continue }
+    // Blank line: keep an open list alive across it (loose lists separate
+    // items with blanks); only blockquotes/tables end on a blank.
+    if (!l) { closeQuote(); continue }
 
     // blockquote (accumulate consecutive > lines)
     if (l.startsWith('>')) {
@@ -110,7 +112,10 @@ export function toHtml(md) {
     }
     closeQuote()
 
-    if (l.startsWith('### ')) {
+    if (/^(-{3,}|\*{3,}|_{3,})$/.test(l)) {
+      closeList()
+      out += '<hr class="rule">'
+    } else if (l.startsWith('### ')) {
       closeList()
       out += `<h3>${fmt(l.slice(4))}</h3>`
     } else if (/^\d+\.\s/.test(l)) {

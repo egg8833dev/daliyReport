@@ -650,6 +650,12 @@ a:hover { text-decoration: underline; }
 
 .sec-body blockquote strong { color: var(--text); }
 
+.sec-body hr.rule {
+  border: none;
+  border-top: 1px solid var(--border-sub);
+  margin: 18px 0;
+}
+
 .sec-body p {
   font-size: 13.5px;
   color: var(--text2);

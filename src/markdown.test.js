@@ -21,6 +21,28 @@ describe('toHtml ordered lists', () => {
     const html = toHtml('- 甲\n1. 乙')
     expect(html).toBe('<ul><li><span>甲</span></li></ul><ol><li><span>乙</span></li></ol>')
   })
+
+  it('keeps a loose list (blank lines between items) as ONE <ol>', () => {
+    // regression: report news items are separated by blank lines; each must
+    // stay in the same <ol> so numbering runs 1,2,3 instead of resetting to 1
+    const html = toHtml('1. 甲\n\n2. 乙\n\n3. 丙')
+    expect(html).toBe(
+      '<ol><li><span>甲</span></li><li><span>乙</span></li><li><span>丙</span></li></ol>'
+    )
+  })
+
+  it('closes the list when a paragraph interrupts, then restarts', () => {
+    const html = toHtml('1. 甲\n\n說明\n\n1. 乙')
+    expect(html).toBe(
+      '<ol><li><span>甲</span></li></ol><p>說明</p><ol><li><span>乙</span></li></ol>'
+    )
+  })
+})
+
+describe('toHtml horizontal rule', () => {
+  it('renders --- as an <hr>, not literal text', () => {
+    expect(toHtml('文字\n\n---')).toBe('<p>文字</p><hr class="rule">')
+  })
 })
 
 describe('toHtml tables', () => {
