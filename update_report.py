@@ -8,7 +8,7 @@ BASE_DIR = _BASH if (_BASH and os.path.exists(_BASH)) else _WIN_BASE
 REPORTS_DIR = os.path.join(BASE_DIR, "public", "reports")
 MANIFEST_PATH = os.path.join(REPORTS_DIR, "manifest.json")
 
-REQUIRED = ['## 📰','## 💹','## 🔬','## 🖥','## ⚙','## 🔍','## 📅','## 🧮','## 📝','## 💼','## 🌟']
+REQUIRED = ['## 📰','## 💹','## 🔬','## 🖥','## ⚙','## 💱','## 🧮','## 🏗','## 🤖','## 🔍','## ✍','## 🧰','## 📖','## 📅','## 💼','## 🌟','## 📝']
 
 def validate(content):
     missing = [s for s in REQUIRED if s not in content]
