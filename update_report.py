@@ -25,6 +25,13 @@ def atomic_write(path, data):
         with os.fdopen(fd, "w", encoding="utf-8") as f:
             f.write(data)
         os.replace(tmp, path)
+    except OSError:
+        # Some mounts (bash sandbox NTFS view) forbid rename/unlink. Fall back
+        # to direct in-place write so the scheduled run still succeeds.
+        with open(path, "w", encoding="utf-8") as f:
+            f.write(data)
+        try: os.unlink(tmp)
+        except OSError: pass
     except Exception:
         try: os.unlink(tmp)
         except OSError: pass
