@@ -1,19 +1,113 @@
-import glob, json, os, sys, tempfile
+import json, os, re, sys, tempfile
 from datetime import datetime
 
-_WIN_BASE = r"C:\Users\egg8833\Desktop\daliyReport"
-_cands = glob.glob("/sessions/*/mnt/Desktop/daliyReport")
-_BASH = _cands[0] if _cands else None
-BASE_DIR = _BASH if (_BASH and os.path.exists(_BASH)) else _WIN_BASE
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 REPORTS_DIR = os.path.join(BASE_DIR, "public", "reports")
 MANIFEST_PATH = os.path.join(REPORTS_DIR, "manifest.json")
 
 REQUIRED = ['## 📰','## 💹','## 🔬','## 🖥','## ⚙','## 💱','## 🧮','## 🏗','## 🤖','## 🔍','## ✍','## 🧰','## 📖','## 📅','## 💼','## 🌟','## 📝']
 
+QUALITY_PROFILE_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "report_quality.json")
+
+
+def load_quality_profile(path=QUALITY_PROFILE_PATH):
+    with open(path, "r", encoding="utf-8") as f:
+        profile = json.load(f)
+
+    global_rules = profile.get("global", {})
+    required_global_rules = ("min_utf8_bytes", "min_unique_urls", "min_action_markers")
+    missing = [key for key in required_global_rules if key not in global_rules]
+    if missing or not profile.get("sections"):
+        raise ValueError("invalid quality profile: missing " + ", ".join(missing or ["sections"]))
+    return profile
+
+
+URL_RE = re.compile(r"https?://[^\s)>\]]+")
+FENCED_CODE_RE = re.compile(r"```.*?```", re.DOTALL)
+ACTION_MARKERS = ("【影響】", "【行動建議】", "【實戰連結】")
+
+
+def safe_print(message):
+    try:
+        print(message)
+    except UnicodeEncodeError:
+        print(message.encode("ascii", "backslashreplace").decode("ascii"))
+
+
+def _section_text(content, icon):
+    starts = [content.find(prefix) for prefix in REQUIRED]
+    start = content.find("## " + icon)
+    if start < 0:
+        return ""
+    following = [position for position in starts if position > start]
+    end = min(following) if following else len(content)
+    return content[start:end]
+
+
+def _unique_editorial_urls(content):
+    prose_only = FENCED_CODE_RE.sub("", content)
+    return set(URL_RE.findall(prose_only))
+
+
+def validate_quality(content, profile):
+    errors = []
+    global_rules = profile["global"]
+    utf8_bytes = len(content.encode("utf-8"))
+    if utf8_bytes < global_rules["min_utf8_bytes"]:
+        errors.append(
+            "min_utf8_bytes: {0} < {1}".format(utf8_bytes, global_rules["min_utf8_bytes"])
+        )
+
+    unique_urls = _unique_editorial_urls(content)
+    if len(unique_urls) < global_rules["min_unique_urls"]:
+        errors.append(
+            "unique URLs: {0} < {1}".format(len(unique_urls), global_rules["min_unique_urls"])
+        )
+
+    action_count = sum(content.count(marker) for marker in ACTION_MARKERS)
+    if action_count < global_rules["min_action_markers"]:
+        errors.append(
+            "action markers: {0} < {1}".format(action_count, global_rules["min_action_markers"])
+        )
+
+    for icon, rules in profile["sections"].items():
+        section = _section_text(content, icon)
+        char_count = len(section)
+        if char_count < rules.get("min_chars", 0):
+            errors.append("section {0} chars: {1} < {2}".format(icon, char_count, rules["min_chars"]))
+
+        url_count = len(_unique_editorial_urls(section))
+        if url_count < rules.get("min_urls", 0):
+            errors.append("section {0} URLs: {1} < {2}".format(icon, url_count, rules["min_urls"]))
+
+        if rules.get("requires_deep_analysis") and "🔎 深度解析" not in section:
+            errors.append("section {0} requires 🔎 深度解析".format(icon))
+        if rules.get("requires_code") and "```" not in section:
+            errors.append("section {0} requires a code block".format(icon))
+        if rules.get("requires_practical_marker") and not any(marker in section for marker in ACTION_MARKERS):
+            errors.append("section {0} requires an action or practical marker".format(icon))
+        phrase = rules.get("requires_phrase")
+        if phrase and phrase.lower() not in section.lower():
+            errors.append("section {0} requires phrase: {1}".format(icon, phrase))
+
+    return errors
+
 def validate(content):
     missing = [s for s in REQUIRED if s not in content]
     if missing:
         print("validation failed, missing: " + ", ".join(missing))
+        return False
+    return True
+
+
+def check_quality(content):
+    if not validate(content):
+        return False
+    quality_errors = validate_quality(content, load_quality_profile())
+    if quality_errors:
+        safe_print("quality validation failed:")
+        for error in quality_errors:
+            safe_print("- " + error)
         return False
     return True
 
@@ -65,7 +159,7 @@ def git_push(date):
     print("git push skipped - handled by Windows Task Scheduler (push_report_auto.bat at 04:45)")
 
 def update(content):
-    if not validate(content):
+    if not check_quality(content):
         sys.exit(1)
     today = datetime.now().strftime("%Y-%m-%d")
     gen_at = datetime.now().strftime("%Y-%m-%d %H:%M") + " (Taiwan time)"
@@ -74,11 +168,20 @@ def update(content):
     git_push(today)
 
 if __name__ == "__main__":
-    if len(sys.argv) > 1:
-        with open(sys.argv[1], "r", encoding="utf-8") as f:
+    args = sys.argv[1:]
+    check_only = args[:1] == ["--check"]
+    if check_only:
+        args = args[1:]
+    if args:
+        with open(args[0], "r", encoding="utf-8") as f:
             content = f.read()
     else:
         content = sys.stdin.read()
     if not content.strip():
         print("empty content"); sys.exit(1)
-    update(content)
+    if check_only:
+        if not check_quality(content):
+            sys.exit(1)
+        safe_print("quality validation passed")
+    else:
+        update(content)

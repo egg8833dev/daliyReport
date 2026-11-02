@@ -1,0 +1,26 @@
+{
+  "global": {
+    "min_utf8_bytes": 40000,
+    "min_unique_urls": 35,
+    "min_action_markers": 12
+  },
+  "sections": {
+    "📰": { "min_chars": 900, "min_urls": 3 },
+    "💹": { "min_chars": 1400, "min_urls": 4 },
+    "🔬": { "min_chars": 1300, "min_urls": 4, "requires_deep_analysis": true },
+    "🖥": { "min_chars": 1500, "min_urls": 4, "requires_deep_analysis": true },
+    "⚙": { "min_chars": 1400, "min_urls": 4, "requires_deep_analysis": true },
+    "💱": { "min_chars": 900, "min_urls": 2 },
+    "🧮": { "min_chars": 800, "requires_code": true, "requires_practical_marker": true },
+    "🏗": { "min_chars": 1200, "requires_phrase": "trade-off", "requires_practical_marker": true },
+    "🤖": { "min_chars": 1000, "requires_code": true, "requires_practical_marker": true },
+    "🔍": { "min_chars": 500, "min_urls": 1 },
+    "✍": { "min_chars": 500, "min_urls": 1 },
+    "🧰": { "min_chars": 500, "min_urls": 1 },
+    "📖": { "min_chars": 800, "requires_practical_marker": true },
+    "📅": { "min_chars": 500, "min_urls": 1 },
+    "💼": { "min_chars": 500, "min_urls": 1 },
+    "🌟": { "min_chars": 500, "min_urls": 1 },
+    "📝": { "min_chars": 700, "requires_phrase": "建議大綱" }
+  }
+}
