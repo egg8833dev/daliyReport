@@ -1,9 +1,8 @@
 name: Daily report
 
 on:
-  schedule:
-    # UTC 21:45 = Asia/Taipei 05:45 the next day. GitHub may delay runs.
-    - cron: '45 21 * * *'
+  # Daily generation is owned by the Codex local automation at 05:30 Asia/Taipei.
+  # Keep this workflow dispatch-only as a controlled backup to avoid duplicate reports.
   workflow_dispatch:
     inputs:
       report_date:
