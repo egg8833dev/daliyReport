@@ -6,10 +6,13 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from update_report import BASE_DIR, REQUIRED, load_quality_profile, update, validate_quality
+from update_report import BASE_DIR, REQUIRED, load_quality_profile, taiwan_now, update, validate_quality
 
 
 class QualityProfileTests(unittest.TestCase):
+    def test_uses_explicit_taipei_timezone_for_publication_dates(self):
+        self.assertEqual(taiwan_now().tzinfo.key, "Asia/Taipei")
+
     def test_uses_the_script_directory_as_the_report_root(self):
         expected_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         self.assertEqual(BASE_DIR, expected_root)

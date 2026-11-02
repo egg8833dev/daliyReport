@@ -1,5 +1,6 @@
 import json, os, re, sys, tempfile
 from datetime import datetime
+from zoneinfo import ZoneInfo
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 REPORTS_DIR = os.path.join(BASE_DIR, "public", "reports")
@@ -8,6 +9,10 @@ MANIFEST_PATH = os.path.join(REPORTS_DIR, "manifest.json")
 REQUIRED = ['## 📰','## 💹','## 🔬','## 🖥','## ⚙','## 💱','## 🧮','## 🏗','## 🤖','## 🔍','## ✍','## 🧰','## 📖','## 📅','## 💼','## 🌟','## 📝']
 
 QUALITY_PROFILE_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "report_quality.json")
+
+
+def taiwan_now():
+    return datetime.now(ZoneInfo("Asia/Taipei"))
 
 
 def load_quality_profile(path=QUALITY_PROFILE_PATH):
@@ -161,8 +166,9 @@ def git_push(date):
 def update(content):
     if not check_quality(content):
         sys.exit(1)
-    today = datetime.now().strftime("%Y-%m-%d")
-    gen_at = datetime.now().strftime("%Y-%m-%d %H:%M") + " (Taiwan time)"
+    now = taiwan_now()
+    today = now.strftime("%Y-%m-%d")
+    gen_at = now.strftime("%Y-%m-%d %H:%M") + " (Taiwan time)"
     save_report(today, content, gen_at)
     update_manifest(today, gen_at)
     git_push(today)
