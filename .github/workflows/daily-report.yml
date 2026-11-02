@@ -1,0 +1,133 @@
+name: Daily report
+
+on:
+  schedule:
+    # UTC 21:45 = Asia/Taipei 05:45 the next day. GitHub may delay runs.
+    - cron: '45 21 * * *'
+  workflow_dispatch:
+    inputs:
+      report_date:
+        description: 'Taiwan date to generate (YYYY-MM-DD); blank means today'
+        required: false
+        type: string
+
+concurrency:
+  group: daily-report
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    outputs:
+      report_date: ${{ steps.date.outputs.value }}
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          ref: main
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '24'
+          cache: npm
+      - name: Check API credential
+        env:
+          REPORT_API_KEY: ${{ secrets.REPORT_OPENAI_API_KEY }}
+        run: |
+          if [ -z "$REPORT_API_KEY" ]; then
+            echo '::error::Add REPORT_OPENAI_API_KEY in repository Settings > Secrets and variables > Actions.'
+            exit 1
+          fi
+      - name: Resolve Taiwan report date
+        id: date
+        env:
+          REQUESTED_DATE: ${{ inputs.report_date }}
+        run: |
+          python3 - <<'PY'
+          import os
+          from datetime import date, datetime
+          from zoneinfo import ZoneInfo
+          today = datetime.now(ZoneInfo('Asia/Taipei')).date()
+          value = os.environ.get('REQUESTED_DATE') or today.isoformat()
+          parsed = date.fromisoformat(value)
+          if parsed.isoformat() != value or parsed > today:
+              raise ValueError('Use an ISO date that is not in the future')
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
+              output.write(f'value={value}\n')
+          PY
+      - run: npm ci --no-audit --no-fund
+      - name: Configure research network access
+        run: |
+          mkdir -p "$RUNNER_TEMP/report-codex"
+          cat > "$RUNNER_TEMP/report-codex/config.toml" <<'TOML'
+          [sandbox_workspace_write]
+          network_access = true
+          TOML
+      - name: Research and generate report
+        uses: openai/codex-action@1d82a3dba7c7988ec71ecae1ed5b8e8db96495c5 # v1
+        env:
+          REPORT_DATE: ${{ steps.date.outputs.value }}
+          TZ: Asia/Taipei
+        with:
+          openai-api-key: ${{ secrets.REPORT_OPENAI_API_KEY }}
+          codex-home: ${{ runner.temp }}/report-codex
+          sandbox: workspace-write
+          safety-strategy: drop-sudo
+          codex-args: --search
+          prompt-file: .github/prompts/daily-report.md
+      - name: Validate generated artifact
+        env:
+          REPORT_DATE: ${{ steps.date.outputs.value }}
+        run: python3 scripts/publish_daily_report.py /tmp/daily_report.md --date "$REPORT_DATE" --check --verify-links
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: daily-report-markdown
+          path: /tmp/daily_report.md
+          if-no-files-found: error
+          retention-days: 7
+
+  publish:
+    needs: generate
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      # A fresh checkout prevents generator changes to application/workflow code.
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          ref: main
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '24'
+          cache: npm
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: daily-report-markdown
+          path: ${{ runner.temp }}/report
+      - name: Validate and write report
+        env:
+          REPORT_DATE: ${{ needs.generate.outputs.report_date }}
+        run: |
+          python3 scripts/publish_daily_report.py "$RUNNER_TEMP/report/daily_report.md" --date "$REPORT_DATE" --verify-links
+          python3 -m unittest discover -s scripts -p 'test_*.py'
+          npm ci --no-audit --no-fund
+          npm test
+          npm run build
+      - name: Commit and push only report data
+        env:
+          REPORT_DATE: ${{ needs.generate.outputs.report_date }}
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- "public/reports/$REPORT_DATE.json" public/reports/manifest.json
+          if git diff --cached --quiet; then
+            echo 'Report unchanged; no commit needed.'
+            exit 0
+          fi
+          git commit -m "daily report $REPORT_DATE"
+          # Never force-push. A concurrent update fails visibly and can be rerun.
+          git push origin HEAD:main
