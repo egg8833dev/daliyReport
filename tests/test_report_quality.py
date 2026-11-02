@@ -1,4 +1,5 @@
 import io
+import json
 import os
 import subprocess
 import sys
@@ -6,10 +7,13 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from update_report import BASE_DIR, REQUIRED, load_quality_profile, taiwan_now, update, validate_quality
+from update_report import BASE_DIR, HEADINGS, REQUIRED, load_quality_profile, taiwan_now, update, validate, validate_quality
 
 
 class QualityProfileTests(unittest.TestCase):
+    def test_rejects_section_prefixes_that_are_not_exact_headings(self):
+        self.assertFalse(validate("\n".join(REQUIRED)))
+
     def test_uses_explicit_taipei_timezone_for_publication_dates(self):
         self.assertEqual(taiwan_now().tzinfo.key, "Asia/Taipei")
 
@@ -22,6 +26,19 @@ class QualityProfileTests(unittest.TestCase):
 
         self.assertEqual(profile["global"]["min_utf8_bytes"], 40000)
         self.assertEqual(profile["global"]["min_unique_urls"], 35)
+
+    def test_rejects_quality_profile_with_missing_section_rule(self):
+        profile = {
+            "global": {"min_utf8_bytes": 1, "min_unique_urls": 1, "min_action_markers": 1},
+            "sections": {"📰": {"min_chars": 1}},
+        }
+        with tempfile.NamedTemporaryFile("w", encoding="utf-8", suffix=".json", delete=False) as file:
+            json.dump(profile, file)
+            path = file.name
+        self.addCleanup(os.unlink, path)
+
+        with self.assertRaisesRegex(ValueError, "missing section rules"):
+            load_quality_profile(path)
 
     def test_rejects_report_with_all_headings_but_too_few_bytes(self):
         profile = {"global": {"min_utf8_bytes": 100000, "min_unique_urls": 0, "min_action_markers": 0}, "sections": {}}
@@ -54,7 +71,7 @@ class QualityProfileTests(unittest.TestCase):
 
     def test_check_mode_reports_quality_failures_without_writing(self):
         with tempfile.NamedTemporaryFile("w", encoding="utf-8", suffix=".md", delete=False) as report:
-            report.write("\n".join(REQUIRED))
+            report.write("\n".join(HEADINGS))
             report_path = report.name
         self.addCleanup(os.unlink, report_path)
 

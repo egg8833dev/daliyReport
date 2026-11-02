@@ -3,6 +3,7 @@
 Git commit/push is deliberately performed by the caller after tests pass.
 """
 import argparse
+import sys
 from concurrent.futures import ThreadPoolExecutor
 from datetime import date, datetime
 import json
@@ -14,6 +15,9 @@ from urllib.request import Request, urlopen
 from zoneinfo import ZoneInfo
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+from update_report import load_quality_profile, validate_quality
+
 HEADINGS = [
     '## 📰 一、國際與台灣重要新聞', '## 💹 二、財經與股市資訊',
     '## 🔬 三、科技與技術新知', '## 🖥️ 四、前端 / UI UX / 網頁設計',
@@ -41,6 +45,9 @@ def validate(content):
         raise ValueError('Financial section needs timestamp and investment notice')
     if not re.findall(r'\]\((https?://[^\s)]+)\)', content):
         raise ValueError('No source links')
+    quality_errors = validate_quality(content, load_quality_profile())
+    if quality_errors:
+        raise ValueError('quality validation failed:\n- ' + '\n- '.join(quality_errors))
 
 
 def verify_code(content):

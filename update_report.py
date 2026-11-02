@@ -6,7 +6,18 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 REPORTS_DIR = os.path.join(BASE_DIR, "public", "reports")
 MANIFEST_PATH = os.path.join(REPORTS_DIR, "manifest.json")
 
+HEADINGS = [
+    '## 📰 一、國際與台灣重要新聞', '## 💹 二、財經與股市資訊',
+    '## 🔬 三、科技與技術新知', '## 🖥️ 四、前端 / UI UX / 網頁設計',
+    '## ⚙️ 五、後端 / 資安 / 維運 / CI/CD', '## 💱 六、金融科技與交易系統',
+    '## 🧮 七、演算法', '## 🏗️ 八、系統設計', '## 🤖 九、AI 工程與工作流實戰',
+    '## 🔍 十、SEO 知識與內容優化建議', '## ✍️ 十一、技術寫作與個人品牌',
+    '## 🧰 十二、開發者效率工具', '## 📖 十三、深讀計畫',
+    '## 📅 十四、歷史脈絡|鑑往知今', '## 💼 十五、職涯規劃與職場發展',
+    '## 🌟 十六、心靈勵志與成功學', '## 📝 十七、今日發文素材推薦',
+]
 REQUIRED = ['## 📰','## 💹','## 🔬','## 🖥','## ⚙','## 💱','## 🧮','## 🏗','## 🤖','## 🔍','## ✍','## 🧰','## 📖','## 📅','## 💼','## 🌟','## 📝']
+SECTION_ICONS = ('📰', '💹', '🔬', '🖥', '⚙', '💱', '🧮', '🏗', '🤖', '🔍', '✍', '🧰', '📖', '📅', '💼', '🌟', '📝')
 
 QUALITY_PROFILE_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "report_quality.json")
 
@@ -22,8 +33,28 @@ def load_quality_profile(path=QUALITY_PROFILE_PATH):
     global_rules = profile.get("global", {})
     required_global_rules = ("min_utf8_bytes", "min_unique_urls", "min_action_markers")
     missing = [key for key in required_global_rules if key not in global_rules]
-    if missing or not profile.get("sections"):
-        raise ValueError("invalid quality profile: missing " + ", ".join(missing or ["sections"]))
+    if missing:
+        raise ValueError("invalid quality profile: missing " + ", ".join(missing))
+    if not isinstance(profile.get("sections"), dict):
+        raise ValueError("invalid quality profile: sections must be an object")
+    missing_sections = [icon for icon in SECTION_ICONS if icon not in profile["sections"]]
+    unexpected_sections = [icon for icon in profile["sections"] if icon not in SECTION_ICONS]
+    if missing_sections or unexpected_sections:
+        detail = "missing section rules: " + ", ".join(missing_sections)
+        if unexpected_sections:
+            detail += "; unexpected section rules: " + ", ".join(unexpected_sections)
+        raise ValueError("invalid quality profile: " + detail)
+    numeric_rules = ("min_utf8_bytes", "min_unique_urls", "min_action_markers")
+    for key in numeric_rules:
+        value = global_rules[key]
+        if not isinstance(value, int) or isinstance(value, bool) or value < 0:
+            raise ValueError("invalid quality profile: global " + key + " must be a non-negative integer")
+    for icon, rules in profile["sections"].items():
+        if not isinstance(rules, dict):
+            raise ValueError("invalid quality profile: section " + icon + " must be an object")
+        for key in ("min_chars", "min_urls"):
+            if key in rules and (not isinstance(rules[key], int) or isinstance(rules[key], bool) or rules[key] < 0):
+                raise ValueError("invalid quality profile: section " + icon + " " + key + " must be a non-negative integer")
     return profile
 
 
@@ -40,12 +71,12 @@ def safe_print(message):
 
 
 def _section_text(content, icon):
-    starts = [content.find(prefix) for prefix in REQUIRED]
-    start = content.find("## " + icon)
-    if start < 0:
+    headings = list(re.finditer(r"^## .+$", content, re.M))
+    index = next((i for i, match in enumerate(headings) if match.group().startswith("## " + icon)), None)
+    if index is None:
         return ""
-    following = [position for position in starts if position > start]
-    end = min(following) if following else len(content)
+    start = headings[index].start()
+    end = headings[index + 1].start() if index + 1 < len(headings) else len(content)
     return content[start:end]
 
 
@@ -98,9 +129,9 @@ def validate_quality(content, profile):
     return errors
 
 def validate(content):
-    missing = [s for s in REQUIRED if s not in content]
-    if missing:
-        print("validation failed, missing: " + ", ".join(missing))
+    actual_headings = re.findall(r"^## .+$", content, re.M)
+    if actual_headings != HEADINGS:
+        safe_print("validation failed: expected all 17 exact headings in order")
         return False
     return True
 
